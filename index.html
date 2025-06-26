@@ -1,45 +1,773 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <header>
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1360122044663499');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1360122044663499&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Coding - プログラミング知識０でもWEBサイトを自由に作る方法</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,133.3C672,139,768,181,864,186.7C960,192,1056,160,1152,138.7C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInLeft 1s ease-out;
+        }
+        
+        .hero-text p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            animation: slideInLeft 1s ease-out 0.2s both;
+        }
+        
+        .trust-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            animation: slideInLeft 1s ease-out 0.4s both;
+        }
+        
+        .trust-indicator .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: slideInLeft 1s ease-out 0.6s both;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-secondary {
+            color: white;
+            text-decoration: underline;
+            font-size: 1.1rem;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            opacity: 1;
+        }
+        
+        .hero-visual {
+            position: relative;
+            animation: slideInRight 1s ease-out;
+        }
+        
+        .code-window {
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transform: perspective(1000px) rotateY(-5deg);
+        }
+        
+        .code-header {
+            background: #2d2d2d;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27ca3f; }
+        
+        .code-body {
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #f8f8f2;
+            line-height: 1.5;
+        }
+        
+        .code-line {
+            margin-bottom: 8px;
+        }
+        
+        .comment { color: #6272a4; }
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .function { color: #50fa7b; }
+        
+        /* Problem Solution Section */
+        .problem-solution {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 60px;
+            opacity: 0.7;
+        }
+        
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .solution-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .solution-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+        
+        .solution-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .solution-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .solution-before {
+            color: #e74c3c;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        
+        .solution-after {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .demo-video {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .video-placeholder {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            border-radius: 20px;
+            padding: 60px 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .play-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+        
+        .play-button::after {
+            content: '▶';
+            font-size: 24px;
+            margin-left: 4px;
+        }
+        
+        /* Learning Process Section */
+        .learning-process {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 20px;
+        }
+        
+        .step-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .step-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        
+        .claude-command {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            border-left: 4px solid #50fa7b;
+        }
+        
+        /* Success Stories Section */
+        .success-stories {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .story-card {
+            background: rgba(255,255,255,0.1);
+            padding: 40px 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .story-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .story-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .story-result {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        /* Final CTA Section */
+        .final-cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .limited-offer {
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .offer-list {
+            list-style: none;
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .offer-list li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .offer-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .guarantee {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+        
+        /* Animations */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-text p {
+                font-size: 1.1rem;
+            }
+            
+            .code-window {
+                transform: none;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .solutions-grid,
+            .process-steps,
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                align-items: center;
+            }
+            
+            .btn-primary {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        /* Scroll animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+        
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>プログラミング知識０でもWEBサイトを自由に作る方法</h1>
+                    <p>Claude Codeと対話するだけで、本格的なWebサイトが完成。コードが書けなくても、AIが理想のサイトを構築します。</p>
+                    
+                    <div class="trust-indicator">
+                        <span class="number">1,500</span>
+                        <span>人が習得済み</span>
+                    </div>
+                    
+                    <div class="cta-buttons">
+                        <a href="#" class="btn-primary">無料でAIサイト制作を体験</a>
+                        <a href="#demo" class="btn-secondary">45秒のデモを見る ↓</a>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="code-window">
+                        <div class="code-header">
+                            <div class="code-dot dot-red"></div>
+                            <div class="code-dot dot-yellow"></div>
+                            <div class="code-dot dot-green"></div>
+                            <span style="margin-left: 10px; color: #8b949e; font-size: 12px;">Claude Code - AI Web Builder</span>
+                        </div>
+                        <div class="code-body">
+                            <div class="code-line"><span class="comment">// あなたの指示</span></div>
+                            <div class="code-line"><span class="string">"ポートフォリオサイトを作って"</span></div>
+                            <div class="code-line"></div>
+                            <div class="code-line"><span class="comment">// Claude Codeが自動生成</span></div>
+                            <div class="code-line"><span class="keyword">const</span> <span class="function">portfolio</span> = {</div>
+                            <div class="code-line">  <span class="string">header</span>: <span class="string">'responsive'</span>,</div>
+                            <div class="code-line">  <span class="string">design</span>: <span class="string">'modern'</span>,</div>
+                            <div class="code-line">  <span class="string">animation</span>: <span class="string">'smooth'</span></div>
+                            <div class="code-line">}</div>
+                            <div class="code-line"></div>
+                            <div class="code-line"><span class="comment">// 完成まで10分 ✨</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<meta name="facebook-domain-verification" content="t629w5odizxnmgb0mwkt2prxcbg80x" />
-        <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="style.css">
-    <h1>文章だけで１円も使わずにお客様も売上も増大させる<br>日本一親切なスピコピーライティング術動画セミナー</h1>
+    <!-- Problem Solution Section -->
+    <section class="problem-solution animate-on-scroll">
+        <div class="container">
+            <h2 class="section-title">AIなら、こんな悩みも一瞬で解決</h2>
+            <p class="section-subtitle">従来の課題をClaude Codeがどのように解決するかご覧ください</p>
+            
+            <div class="solutions-grid">
+                <div class="solution-card">
+                    <div class="solution-icon">💻</div>
+                    <h3>コードが書けない問題</h3>
+                    <p class="solution-before">HTML、CSS、JavaScriptを覚える必要</p>
+                    <p class="solution-after">→ 日本語で指示するだけでOK</p>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">🚫</div>
+                    <h3>エラーへの恐怖</h3>
+                    <p class="solution-before">バグやエラーで挫折</p>
+                    <p class="solution-after">→ AIが自動で修正・最適化</p>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">⏰</div>
+                    <h3>時間がかかりすぎる</h3>
+                    <p class="solution-before">数週間〜数ヶ月の学習期間</p>
+                    <p class="solution-after">→ 10分で基本サイトが完成</p>
+                </div>
+            </div>
+            
+            <div class="demo-video" id="demo">
+                <div class="video-placeholder">
+                    <div class="play-button"></div>
+                    <h3>Claude Codeでサイトを作る45秒実演</h3>
+                    <p>実際の操作画面とコード生成の様子をご覧ください</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    </header>
-    
-<!-- フォーム -->
-<div class="form_box">
-    <img class="form" src="images/form.gif">
-  	<form action="https://24auto.biz/aai49690/planmail.php" method="post">
-	  <input name="pid" type="hidden" value="16" />
-      <input type="text" name="email" class="name_sp" value="" placeholder="メールアドレスを入力" >
-    <input type="image" name="submit" class="play" value="" src="images/play.gif"
-onmouseover="this.src='images/play2.gif'" onmouseout="this.src='images/play.gif'"/>
-    </form>
-    <div class="box">
-      <p class="last">
-      ※いつでも解除が可能ですのでご安心ください</p>
-    </div>
-  </div>
-  <footer><p class=copy>&copy;結びコンサルティング事務所 All Rights Reserved.<br>
-<a href="https://kuwahara-writing.com/?page_id=51/">特定商取引法の表記</a></p></footer>
+    <!-- Learning Process Section -->
+    <section class="learning-process animate-on-scroll">
+        <div class="container">
+            <h2 class="section-title">3ステップでAIマスター</h2>
+            <p class="section-subtitle">わずか10日間でプロレベルのサイト制作スキルを習得</p>
+            
+            <div class="process-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Claude Codeと対話</h3>
+                    <p>基本的な指示方法を習得</p>
+                    <div class="step-details">
+                        <strong>期間：3日間</strong>
+                        <div class="claude-command">
+                        > "レスポンシブなヘッダーを作成して"<br>
+                        > "ダークモードに対応させて"<br>
+                        > "お問い合わせフォームを追加"
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>カスタマイズ技術</h3>
+                    <p>細かな調整の指示方法</p>
+                    <div class="step-details">
+                        <strong>期間：4日間</strong>
+                        <div class="claude-command">
+                        > "ブランドカラーを#3498dbに変更"<br>
+                        > "アニメーションをもっと滑らかに"<br>
+                        > "モバイル表示を最適化"
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>公開・運用</h3>
+                    <p>デプロイと更新方法</p>
+                    <div class="step-details">
+                        <strong>期間：3日間</strong>
+                        <div class="claude-command">
+                        > "Netlifyにデプロイして"<br>
+                        > "SEO対策を追加"<br>
+                        > "Google Analyticsを設定"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories Section -->
+    <section class="success-stories animate-on-scroll">
+        <div class="container">
+            <h2 class="section-title">受講生の実際の作品とAI指示</h2>
+            <p class="section-subtitle">実際にClaude Codeで作成されたサイトと成果をご紹介</p>
+            
+            <div class="stories-grid">
+                <div class="story-card">
+                    <div class="story-avatar">田</div>
+                    <h3>田中さん（デザイナー）</h3>
+                    <p>「コードが全く書けない状態から、クライアント用のランディングページを作成できるようになりました。」</p>
+                    <div class="story-result">
+                        <strong>成果：</strong> 5日で完成・月20万円の副業収入達成
+                    </div>
+                </div>
+                
+                <div class="story-card">
+                    <div class="story-avatar">佐</div>
+                    <h3>佐藤さん（会社員）</h3>
+                    <p>「転職活動用のポートフォリオサイトをAIで作成。面接官から高評価をいただきました。」</p>
+                    <div class="story-result">
+                        <strong>成果：</strong> Web制作会社への転職成功・年収150万円アップ
+                    </div>
+                </div>
+                
+                <div class="story-card">
+                    <div class="story-avatar">高</div>
+                    <h3>高橋さん（主婦）</h3>
+                    <p>「自分のハンドメイド作品を販売するECサイトを、Claude Codeで簡単に作成できました。」</p>
+                    <div class="story-result">
+                        <strong>成果：</strong> オンラインショップ開設・月売上50万円達成
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta animate-on-scroll">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="section-title">今なら限定でClaude Code活用法を無料公開</h2>
+                
+                <div class="limited-offer">
+                    <h3>🎁 限定特典内容</h3>
+                    <ul class="offer-list">
+                        <li>Claude Code指示テンプレート集（50種類以上）</li>
+                        <li>よく使う指示文のチートシート</li>
+                        <li>1対1サポート（初回60分無料）</li>
+                        <li>実際のサイト制作事例集</li>
+                        <li>デプロイ完全ガイド</li>
+                    </ul>
+                </div>
+                
+                <a href="#" class="btn-primary" style="font-size: 1.4rem; padding: 25px 50px;">Claude Codeで今すぐサイト制作を始める</a>
+                
+                <div class="guarantee">
+                    🛡️ 30日間返金保証付き<br>
+                    満足いただけない場合は全額返金いたします
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Demo video click handler
+        document.querySelector('.play-button').addEventListener('click', function() {
+            alert('デモ動画が再生されます（実装時にはここに実際の動画プレーヤーが配置されます）');
+        });
+
+        // CTA button click handlers
+        document.querySelectorAll('.btn-primary').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('無料体験申込みページに遷移します（実装時には実際のフォームページにリンクされます）');
+            });
+        });
+    </script>
+</body>
+</html>
